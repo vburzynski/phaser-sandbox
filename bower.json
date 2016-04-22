@@ -1,0 +1,22 @@
+{
+  "name": "phaser-test",
+  "description": "Phaser Test Project",
+  "main": "",
+  "authors": [
+    "Valerie Burzynski"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "phaser": "phaser-official#^2.4.7",
+    "jquery": "^2.2.3",
+    "lodash": "^4.11.2"
+  }
+}

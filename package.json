@@ -1,0 +1,32 @@
+{
+  "name": "phaser-test",
+  "version": "0.1.0",
+  "description": "Phaser Test Project",
+  "main": "index.js",
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "browser": {
+    "jquery": "./bower_components/jquery/dist/jquery.js",
+    "lodash": "./bower_components/lodash/dist/lodash.js"
+  },
+  "browserify-shim": {
+    "jquery": "$",
+    "lodash": "_"
+  },
+  "browserify": {
+    "transform": ["browserify-shim"]
+  },
+  "devDependencies": {
+    "browserify": "^13.0.0",
+    "browserify-shim": "^3.8.12",
+    "grunt": "^1.0.1",
+    "grunt-browserify": "^5.0.0",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-connect": "^1.0.1",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-qunit": "^1.2.0",
+    "grunt-contrib-uglify": "^1.0.1",
+    "grunt-contrib-watch": "^1.0.0"
+  }
+}
