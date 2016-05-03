@@ -9,10 +9,10 @@ module.exports = function(grunt) {
     dirDebug: 'build/debug/',
     pkg: grunt.file.readJSON('package.json'),
     banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
-    '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-    '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
-    '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-    ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
+      '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
+      '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
+      '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
+      ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
 
     // Task configuration.
 
@@ -34,22 +34,18 @@ module.exports = function(grunt) {
 
     browserify: {
       dev: {
-        files: {
-          '<%= dirDebug %>app.js': 'src/main.js'
-        },
-        transform: ["browserify-shim"],
         options: {
-          bundleOptions : {
-              debug: true
+          browserifyOptions: {
+            debug: true
           }
-        }
+        },
+        src: ['src/main.js'],
+        dest: '<%= dirDebug %>app.js'
       },
       prod: {
         files: {
           '<%= dirTmp %>app.js': 'src/main.js'
-        },
-        transform: ["browserify-shim"],
-        options: {}
+        }
       }
     },
 
@@ -81,7 +77,7 @@ module.exports = function(grunt) {
     connect: {
       dev: {
         options: {
-          port: 3000,
+          port: 3001,
           base: '.'
         }
       }
@@ -137,7 +133,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('browserify-shim');
 
   // Default task.
   // grunt.registerTask('default', ['jshint', 'qunit', 'concat', 'uglify']);
@@ -147,6 +142,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('server', [
+    'browserify:dev',
     'connect:dev',
     'watch:dev'
   ]);
