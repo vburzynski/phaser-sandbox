@@ -1,0 +1,175 @@
+var Dialog = function (x, y, data, cursors, game) {
+  this.dialog = data;
+  this.cursors = cursors;
+  this.textIndex = -1;
+  this.optionStart = 0;
+  this.texts = [];
+  this.isCursorDown = false;
+  this.game = game;
+  this.x = x;
+  this.y = y;
+  this.cursors.up.onDown.add(this._onUpCursorDown, this);
+  this.cursors.up.onUp.add(this._onUpCursorUp, this);
+  this.cursors.down.onDown.add(this._onDownCursorDown, this);
+  this.cursors.down.onUp.add(this._onDownCursorUp, this);
+  //        this.cursors.left.onDown.addOnce(function () {
+  //            this.destroy();
+  //        }, this);
+  this.reset();
+};
+
+// TODO dialog background
+// TODO margins around text
+// TODO limit highlighting to options
+// TODO configurable highlight color
+// TODO configurable text color
+
+Dialog.prototype = {
+  /**
+   * Handles Down state of Up cursor
+   */
+  _onUpCursorDown: function () {
+    this.prevOption();
+    this.isCursorDown = 'up';
+  },
+
+  /**
+   * Handles Up state of Up cursor
+   */
+  _onUpCursorUp: function () {
+    if (this.isCursorDown === 'up') {
+      this.isCursorDown = false;
+    }
+  },
+
+  /**
+   * Handles Down state of Down cursor
+   */
+  _onDownCursorDown: function () {
+    this.nextOption();
+    this.isCursorDown = 'down';
+  },
+
+  /**
+   * Handles Up state of Down cursor
+   */
+  _onDownCursorUp: function () {
+    if (this.isCursorDown === 'down') {
+      this.isCursorDown = false;
+    }
+  },
+
+  /**
+   * Sets the next text gameobject
+   * @private
+   * @param   {Number}     x     x-axis position
+   * @param   {Number}     y     y-axis position
+   * @param   {Number}     index index for this text
+   * @param   {String}     text  text string
+   * @returns {BitmapText} BitmapText gameobject
+   */
+  _setText: function (x, y, index, text) {
+    if (index < this.texts.length) {
+      this.texts[index].setText(text);
+      this.texts[index].x = x;
+      this.texts[index].y = y;
+    } else {
+      this.texts[index] = this.game.add.bitmapText(x, y, 'arial', text, 32);
+    }
+    return this.texts[index];
+  },
+
+  /**
+   * Resets the Dialog instance
+   */
+  reset: function () {
+    var index = 0,
+      text,
+      len,
+      i,
+      y = this.y,
+      x = this.x;
+
+    if (this.dialog.message) {
+      text = this._setText(x, y, index, this.dialog.message);
+      y = text.y + text.height;
+      index += 1;
+      this.optionStart += 1;
+    }
+
+    if (this.dialog.text) {
+      if (this.dialog.speaker) {
+        text = this._setText(x, y, index, this.dialog.speaker + ": " + this.dialog.text);
+      } else {
+        text = this._setText(x, y, index, this.dialog.text);
+      }
+      y = text.y + text.height;
+      index += 1;
+      this.optionStart += 1;
+    }
+
+    len = this.dialog.options.length;
+    for (i = 0; i < len; i += 1) {
+      text = this._setText(x + 20, y, index, this.dialog.options[i]);
+      y = text.y + text.height;
+      index += 1;
+    }
+  },
+
+  /**
+   * Destroys the Dialog instance
+   */
+  destroy: function () {
+    var i, len;
+    this.dialog = null;
+    this.cursors.up.onDown.remove(this._onUpCursorDown, this);
+    this.cursors.up.onUp.remove(this._onUpCursorUp);
+    this.cursors.down.onDown.remove(this._onDownCursorDown, this);
+    this.cursors.down.onUp.remove(this._onDownCursorUp);
+    this.cursors = null;
+    len = this.texts.length;
+    for (i = 0; i < len; i += 1) {
+      this.texts[i].destroy();
+    }
+  },
+
+  /**
+   * Select the next option in the dialog
+   */
+  nextOption: function () {
+    if (this.isCursorDown === false && this.textIndex < this.texts.length - 1) {
+      if (this.textIndex > -1) {
+        this.texts[this.textIndex].tint = 0xFFFFFF;
+      }
+      this.textIndex += 1;
+      if (this.textIndex < this.optionStart) {
+        this.textIndex = this.optionStart;
+      }
+      this.texts[this.textIndex].tint = 0xFF0000;
+    }
+  },
+
+  /**
+   * Select the previous option in the dialog
+   */
+  prevOption: function () {
+    if (this.isCursorDown === false && this.textIndex > this.optionStart) {
+      this.texts[this.textIndex].tint = 0xFFFFFF;
+      this.textIndex -= 1;
+      if (this.textIndex > -1) {
+        this.texts[this.textIndex].tint = 0xFF0000;
+      }
+    }
+  },
+
+  /**
+   * Sets the dialog up with new data
+   * @param {Object} data dialog data object
+   */
+  set: function (data) {
+    this.dialog = data;
+    this.resest();
+  }
+};
+
+module.exports = Dialog;
