@@ -8,10 +8,11 @@ function onUp() {
   console.log('up');
 }
 
-var Dialog = function (x, y, data, cursors, gamepad, game) {
-  this.dialog = data;
+var Dialog = function (x, y, dialogMachine, cursors, gamepad, game) {
+  this.dialogMachine = dialogMachine;
   this.cursors = cursors;
   this.textIndex = -1;
+  this.choiceIndex = 0;
   this.optionStart = 0;
   this.texts = [];
   this.isCursorDown = false;
@@ -62,7 +63,11 @@ Dialog.prototype = {
   },
 
   _onActivate: function () {
-    alert(this.texts[this.textIndex].text);
+    var choiceIndex = this.textIndex - this.optionStart;
+    var edgeId = this.dialog.options[choiceIndex].edge;
+    this.dialogMachine.activateEdge(edgeId);
+    debugger;
+    this.reset();
   },
 
   /**
@@ -130,6 +135,8 @@ Dialog.prototype = {
       y = this.y,
       x = this.x;
 
+    this.dialog = this.dialogMachine.getDialog();
+
     if (this.dialog.message) {
       text = this._setText(x, y, index, this.dialog.message);
       y = text.y + text.height;
@@ -150,10 +157,21 @@ Dialog.prototype = {
 
     len = this.dialog.options.length;
     for (i = 0; i < len; i += 1) {
-      text = this._setText(x + 20, y, index, this.dialog.options[i]);
+      text = this._setText(x + 20, y, index, this.dialog.options[i].text);
       y = text.y + text.height;
       index += 1;
     }
+
+    this.clearTexts(index);
+  },
+
+  clearTexts: function(index) {
+    var i, len = this.texts.length;
+    index = index || 0;
+    for (i = index; i < len; i += 1) {
+      this.texts[i].destroy();
+    }
+    this.texts = this.texts.slice(0,index);
   },
 
   /**
@@ -161,7 +179,7 @@ Dialog.prototype = {
    */
   destroy: function () {
     var i, len;
-    this.dialog = null;
+    this.dialogMachine = null;
     this.cursors.up.onDown.remove(this._onUpCursorDown, this);
     this.cursors.up.onUp.remove(this._onUpCursorUp);
     this.cursors.down.onDown.remove(this._onDownCursorDown, this);
@@ -206,8 +224,8 @@ Dialog.prototype = {
    * Sets the dialog up with new data
    * @param {Object} data dialog data object
    */
-  set: function (data) {
-    this.dialog = data;
+  set: function (dialogMachine) {
+    this.dialogMachine = dialogMachine;
     this.resest();
   }
 };

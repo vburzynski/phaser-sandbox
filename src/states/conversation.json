@@ -1,0 +1,36 @@
+{
+  "start": 0,
+  "nodes": [{
+    "id": 0,
+    "content": {
+      "message": "Good Job!",
+      "speaker": "John",
+      "text": "What would you like to do?"
+    }
+  }, {
+    "id": 1,
+    "content": {
+      "message": "message 2",
+      "speaker": "John",
+      "text": "What to do now?"
+    }
+  }, {
+    "id": 2,
+    "content": {
+      "message": "message 3",
+      "speaker": "John",
+      "text": "bla bla bla?"
+    }
+  }],
+  "edges": [{
+    "id": 0,
+    "content": "Go Home",
+    "from_node": 0,
+    "to_node": 1
+  }, {
+    "id": 1,
+    "content": "Carry On",
+    "from_node": 0,
+    "to_node": 2
+  }]
+}

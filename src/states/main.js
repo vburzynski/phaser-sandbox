@@ -61,15 +61,10 @@ module.exports = {
    */
   create: function () {
 
-    var dialogConfig = {
-      message: "Good Job!",
-      speaker: "John",
-      text: "What would you like to do?",
-      options: [
-        "Go home",
-        "Carry on"
-      ]
-    };
+    var dialog_tree = require("./conversation.json");
+    var DialogMachine = require('../dialogMachine');
+    var dialogMachine = new DialogMachine(dialog_tree);
+    dialogMachine.start();
 
     bmpText = this.game.add.bitmapText(10, 10, 'arial', 'Phaser & Pixi \nrocking!', 32);
     cursors = this.game.input.keyboard.addKeys({
@@ -86,7 +81,7 @@ module.exports = {
     console.log("Number of Gamepads connected: " + gamepad.padsConnected);
 
     // create dialog
-    dialog = new Dialog(10, 200, dialogConfig, cursors, gamepad, this.game);
+    dialog = new Dialog(10, 200, dialogMachine, cursors, gamepad, this.game);
 
     gamepad.start();
 
