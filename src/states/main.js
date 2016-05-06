@@ -72,13 +72,27 @@ module.exports = {
     };
 
     bmpText = this.game.add.bitmapText(10, 10, 'arial', 'Phaser & Pixi \nrocking!', 32);
-    cursors = this.game.input.keyboard.createCursorKeys();
+    cursors = this.game.input.keyboard.addKeys({
+      'up': Phaser.KeyCode.UP,
+      'down': Phaser.KeyCode.DOWN,
+      'left': Phaser.KeyCode.LEFT,
+      'right': Phaser.KeyCode.RIGHT,
+      'enter': Phaser.KeyCode.ENTER
+    });
+
+    var gamepad = this.game.input.gamepad;
+
+
+    console.log("Number of Gamepads connected: " + gamepad.padsConnected);
 
     // create dialog
-    dialog = new Dialog(10, 200, dialogConfig, cursors, this.game);
+    dialog = new Dialog(10, 200, dialogConfig, cursors, gamepad, this.game);
+
+    gamepad.start();
 
     // update text color if down key pressed
     this.game.input.onDown.add(updateText, this);
+
   },
 
   /**
@@ -87,7 +101,5 @@ module.exports = {
   update: function () {
     // generate some text that updates constantly
     bmpText.setText('Phaser & Pixi rocking!\n' + Math.round(this.game.time.now) + "\n" + stateName);
-
-    //if (cursors.left.isDown) {}
   }
 };

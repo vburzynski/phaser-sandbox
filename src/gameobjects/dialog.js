@@ -1,4 +1,14 @@
-var Dialog = function (x, y, data, cursors, game) {
+var buttonA;
+
+function onDown() {
+  console.log('down');
+}
+
+function onUp() {
+  console.log('up');
+}
+
+var Dialog = function (x, y, data, cursors, gamepad, game) {
   this.dialog = data;
   this.cursors = cursors;
   this.textIndex = -1;
@@ -8,13 +18,29 @@ var Dialog = function (x, y, data, cursors, game) {
   this.game = game;
   this.x = x;
   this.y = y;
+  this.pad = gamepad.pad1;
+
+  if (this.pad) {
+    console.log("Number of Gamepads connected: " + gamepad.padsConnected);
+    console.log("Gamepad 1 " + (gamepad.pad1.connected ? "is connected" : "inactive"));
+    console.log("Gamepad 2 " + (gamepad.pad2.connected ? "is connected" : "inactive"));
+    console.log("Gamepad 3 " + (gamepad.pad3.connected ? "is connected" : "inactive"));
+    console.log("Gamepad 4 " + (gamepad.pad4.connected ? "is connected" : "inactive"));
+
+    this.pad.addCallbacks(this, {
+      onConnect: this.addButtons
+    });
+    if (this.pad.connected) {
+      this.addButtons();
+    }
+  }
+
   this.cursors.up.onDown.add(this._onUpCursorDown, this);
   this.cursors.up.onUp.add(this._onUpCursorUp, this);
   this.cursors.down.onDown.add(this._onDownCursorDown, this);
   this.cursors.down.onUp.add(this._onDownCursorUp, this);
-  //        this.cursors.left.onDown.addOnce(function () {
-  //            this.destroy();
-  //        }, this);
+  this.cursors.enter.onDown.add(this._onActivate, this);
+
   this.reset();
 };
 
@@ -25,6 +51,20 @@ var Dialog = function (x, y, data, cursors, game) {
 // TODO configurable text color
 
 Dialog.prototype = {
+  addButtons: function () {
+    this.dpad_up = this.pad.getButton(Phaser.Gamepad.XBOX360_DPAD_UP);
+    this.dpad_up.onDown.add(this._onUpCursorDown, this);
+    this.dpad_up.onUp.add(this._onUpCursorUp, this);
+
+    this.dpad_down = this.pad.getButton(Phaser.Gamepad.XBOX360_DPAD_DOWN);
+    this.dpad_down.onDown.add(this._onDownCursorDown, this);
+    this.dpad_down.onUp.add(this._onDownCursorUp, this);
+  },
+
+  _onActivate: function () {
+    alert(this.texts[this.textIndex].text);
+  },
+
   /**
    * Handles Down state of Up cursor
    */
