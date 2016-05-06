@@ -7,22 +7,6 @@ var PIXI = window.PIXI = require('../bower_components/phaser/build/custom/pixi.j
 window.p2 = require('../bower_components/phaser/build/custom/p2.js');
 window.Phaser = require('../bower_components/phaser/build/custom/phaser-split.js');
 
-
-function create() {
-  'use strict';
-
-  // add some styled text to the screen;
-  var text = "- phaser -\n with a sprinkle of \n pixi dust!",
-    style = {
-      font: "65px Arial",
-      fill: "#ff0044",
-      align: "center"
-    };
-  game.add.text(game.world.centerX - 300, 0, text, style);
-
-  console.log('hello world');
-}
-
 // new phaser game
 game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example');
 
