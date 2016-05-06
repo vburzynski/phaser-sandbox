@@ -1,9 +1,9 @@
 {
   "name": "phaser-test",
   "version": "0.1.0",
-  "title": "Phaser Test Project"
+  "title": "Phaser Test Project",
   "description": "Phaser Test Project",
-  "homepage": "http://github.com/vburzynski/phaser-test"
+  "homepage": "http://github.com/vburzynski/phaser-test",
   "main": "index.js",
   "engines": {
     "node": ">= 0.10.0"
