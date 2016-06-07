@@ -25,7 +25,9 @@
         "require",
         "Phaser",
         "PIXI",
-        "p2"
+        "p2",
+        "describe",
+        "it"
     ],
     "regexp"    : false,
     "rhino"     : false,

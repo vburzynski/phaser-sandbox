@@ -79,15 +79,15 @@ var json = {
     "OR param1 param2",
     "NOT param1",
     "CALL methodName",
-    "EMIT eventName"
+    "EMIT eventName",
 
     //another option:
     "param1 += 1",
     "param1 = 2",
     "param1 = param2",
-    "param1 += param4"
+    "param1 += param4",
     "param3 -= param4 + 5"
 
     // evil eval?
   ]
-}
+};

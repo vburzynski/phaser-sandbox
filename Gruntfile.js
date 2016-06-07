@@ -7,6 +7,7 @@ module.exports = function(grunt) {
     dirTmp: '.tmp/',
     dirRelease: 'build/release/',
     dirDebug: 'build/debug/',
+    dirTest: 'test/',
     pkg: grunt.file.readJSON('package.json'),
     banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
       '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
@@ -46,6 +47,15 @@ module.exports = function(grunt) {
         files: {
           '<%= dirTmp %>app.js': 'src/main.js'
         }
+      },
+      test: {
+        options: {
+          browserifyOptions: {
+            debug: true
+          }
+        },
+        src: ['src/fsm.js'],
+        dest: '<%= dirTest %>app.js'
       }
     },
 
@@ -71,6 +81,15 @@ module.exports = function(grunt) {
       lib_test: {
         files: '<%= jshint.lib_test.src %>',
         tasks: ['jshint:lib_test', 'qunit']
+      },
+      test: {
+        options: {
+          spawn: true,
+          interrupt: true,
+          debounceDelay: 250,
+        },
+        files: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.test.js'],
+        tasks: ['browserify:test', 'mocha']
       }
     },
 
@@ -122,6 +141,23 @@ module.exports = function(grunt) {
 
     qunit: {
       files: ['test/**/*.html']
+    },
+
+    // Mocha
+    mocha: {
+      all: {
+        src: ['test/testrunner.html'],
+      },
+      options: {
+        //reporter: 'dot',
+        reporter: 'spec',
+        // reporter: 'list',
+        // reporter: 'progress',
+        run: true,
+        log: true,
+        logErrors: true,
+        growlOnSuccess: true
+      }
     }
   });
 
@@ -133,6 +169,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-browserify');
+  grunt.loadNpmTasks('grunt-mocha');
 
   // Default task.
   // grunt.registerTask('default', ['jshint', 'qunit', 'concat', 'uglify']);
@@ -154,5 +191,10 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', [
     'debug'
+  ]);
+
+  grunt.registerTask('test', [
+    'browserify:test',
+    'mocha'
   ]);
 };

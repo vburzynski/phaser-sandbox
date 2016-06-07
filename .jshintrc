@@ -1,0 +1,11 @@
+{
+  "predef" : [
+    "angular",
+    "$",
+    "module",
+    "require",
+    "Phaser",
+    "PIXI",
+    "p2"
+  ]
+}
