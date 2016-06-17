@@ -4,6 +4,7 @@ var _ = require('lodash'),
 
 DialogMachine = function (data) {
   this.data = data;
+  this.initial = data.start;
   this.nodeIndex = [];
   this.edgeIndex = [];
   this.currentNode = null;
@@ -22,7 +23,7 @@ DialogMachine = function (data) {
 
 DialogMachine.prototype = {
   start: function () {
-    var startId = this.data.start;
+    var startId = this.initial;
     this.setNode(startId);
     return this;
   },

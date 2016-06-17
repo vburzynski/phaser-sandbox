@@ -1,18 +1,6 @@
 /*jshint -W030 */
 /*globals _, describe, context, it, before, beforeEach, chai, sinon, FSM */
 
-var assert = chai.assert;
-var expect = chai.expect;
-
-describe('Array', function () {
-  describe('#indexOf()', function () {
-    it('should return -1 when the value is not present', function () {
-      assert.equal(-1, [1, 2, 3].indexOf(5));
-      assert.equal(-1, [1, 2, 3].indexOf(0));
-    });
-  });
-});
-
 describe('FSM', function () {
   var data = {
     initial: 'home',
@@ -101,7 +89,7 @@ describe('FSM', function () {
     it("should add the event while maintaining the correct sorted event order.", function(){
       expect(this.fsm.eventNames.indexOf(this.newEvent.name)).to.equal(1);
     });
-    
+
     it("should update the eventName collection that maps the name to the sorted index.", function(){
       expect(this.newEvent.name).to.be.oneOf(this.fsm.eventNames);
     });
@@ -314,7 +302,7 @@ describe('FSM', function () {
         expect(this.spy.getCall(2).args[0][0]).to.equal('exit');
         expect(this.spy.getCall(3).args[0][0]).to.equal('exit-home');
       });
-      
+
       it("should cause the fsm to emit an enter node event for the current node", function () {
         expect(this.spy.getCall(4).args[0][0]).to.equal('enter');
         expect(this.spy.getCall(5).args[0][0]).to.equal('enter-state2');
@@ -328,7 +316,7 @@ describe('FSM', function () {
       it("should execute the fsm's onBefore transition event handler", function () {
         expect(this.onBeforeFSMSpy.called).to.equal.true;
       });
-      
+
       it("should execute the fsm's onExit state transition event handler", function () {
         expect(this.onExitFSMSpy.called).to.equal.true;
       });
@@ -342,15 +330,15 @@ describe('FSM', function () {
       it("should execute any transition-specific onBefore transition event handlers", function () {
         expect(this.onBeforeSpy.called).to.be.true;
       });
-      
+
       it("should execute any state-specific onExit state transition event handlers", function () {
         expect(this.onExitSpy.called).to.be.true;
       });
-      
+
       it("should execute any state-specific onEnter state event handlers", function () {
         expect(this.onEnterSpy.called).to.be.true;
       });
-      
+
       it("should execute any transition-specific onAfter transition event handlers", function () {
         expect(this.onAfterSpy.called).to.be.true;
       });

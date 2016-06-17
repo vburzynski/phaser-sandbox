@@ -1,6 +1,6 @@
-var _ = require('lodash'),
-  $ = require('jquery'),
-  EventsMixin = require('./mixins/events');
+import _ from 'lodash';
+import $ from 'jquery';
+import EventsMixin from './mixins/events';
 
 /*
 data format:
@@ -64,11 +64,11 @@ function _trigger(fsm, eventName, name, obj, eventObj) {
   fsm.emit(eventName.toLowerCase() + '-' + name, fsm.previous, fsm.state);
 
   fnStr = 'on' + eventName.charAt(0).toUpperCase() + eventName.slice(1);
-  
+
   if (fsm && fsm[fnStr] && _.isFunction(fsm[fnStr])) {
     fsm[fnStr](eventObj, fsm.previous, fsm.state);
   }
-  
+
   if (obj && obj[fnStr] && _.isFunction(obj[fnStr])) {
     obj[fnStr](eventObj, fsm.previous, fsm.state);
   }
@@ -145,7 +145,7 @@ FSM.prototype = {
    */
   start: function () {
     this.stop();
-    
+
     // when the initial state exists
     if (this.states[this.initial]) {
       // stop the fsm if it is running
@@ -255,4 +255,5 @@ _.extend(FSM.prototype, EventsMixin);
 FSM.prototype.init.prototype = FSM.prototype;
 
 window.FSM = FSM;
-module.exports = FSM;
+
+exports = FSM;

@@ -1,11 +1,17 @@
+# temp and builds
+.tmp
+tmp
+dist
+build
+
+# dev stuff
 node_modules
 bower_components
-.npm-debug.log
-tmp
-.tmp
-build
+test/bower_components
 
 # Logs
 logs
 *.log
 npm-debug.log*
+
+.DS_Store

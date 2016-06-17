@@ -1,12 +1,11 @@
 {
-  "name": "phaser-test",
+  "name": "webapp",
   "description": "Phaser Test Project",
   "main": "",
   "authors": [
     "Valerie Burzynski"
   ],
-  "license": "MIT",
-  "homepage": "",
+  "private": true,
   "ignore": [
     "**/.*",
     "node_modules",
@@ -15,8 +14,23 @@
     "tests"
   ],
   "dependencies": {
+    "bootstrap-sass": "~3.3.5",
+    "modernizr": "~2.8.1",
     "phaser": "phaser-official#^2.4.7",
     "jquery": "^2.2.3",
     "lodash": "^4.11.2"
+  },
+  "overrides": {
+    "bootstrap-sass": {
+      "main": [
+        "assets/stylesheets/_bootstrap.scss",
+        "assets/fonts/bootstrap/*",
+        "assets/javascripts/bootstrap.js"
+      ]
+    }
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
   }
 }
