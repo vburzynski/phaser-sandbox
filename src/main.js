@@ -16,5 +16,3 @@ game.state.add('main', require('./states/main'));
 
 // start first state
 game.state.start('boot');
-
-// TODO - potentially try babel in place of browserify or try babelify

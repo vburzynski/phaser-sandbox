@@ -1,10 +1,14 @@
 /*jslint bitwise:true */
+import $ from 'jquery';
+import Dialog from '../gameobjects/dialog';
+import DialogMachine from '../dialogMachine';
+import dialog_tree from './conversation.json';
 
-var $ = require('jquery'),
-  // fsm = require('fsm/main-fsm'),
-  Dialog = require('../gameobjects/dialog'),
-  // config = require('config/config'),
-  bmpText,
+console.log("Dialog", Dialog);
+console.log("DialogMachine", DialogMachine);
+console.log("dialog_tree", dialog_tree);
+
+var bmpText,
   stateName = '',
   cursors,
   dialog;
@@ -48,25 +52,24 @@ order:
   shutdown    - state is shutdown
 */
 
-module.exports = {
+export default {
   /**
    * Preload all the assets for this state
    */
   preload: function () {
-    this.game.load.bitmapFont('arial', 'assets/fonts/arial_32.png', 'assets/fonts/arial_32.xml');
+    this.game.load.bitmapFont('arial', 'fonts/arial_32.png', 'fonts/arial_32.xml');
   },
 
   /**
    * Create the initial state
    */
   create: function () {
-
-    var dialog_tree = require("./conversation.json");
-    var DialogMachine = require('../dialogMachine');
+    debugger;
     var dialogMachine = new DialogMachine(dialog_tree);
     dialogMachine.start();
 
     bmpText = this.game.add.bitmapText(10, 10, 'arial', 'Phaser & Pixi \nrocking!', 32);
+
     cursors = this.game.input.keyboard.addKeys({
       'up': Phaser.KeyCode.UP,
       'down': Phaser.KeyCode.DOWN,

@@ -1,9 +1,11 @@
 // generated on 2016-06-15 using generator-webapp 2.1.0
 const gulp = require('gulp');
+const babel = require('gulp-babel');
 const gulpLoadPlugins = require('gulp-load-plugins');
 const browserSync = require('browser-sync');
 const del = require('del');
 const wiredep = require('wiredep').stream;
+
 const browserify = require('browserify');
 const babelify = require('babelify');
 const buffer = require('vinyl-buffer');
@@ -28,18 +30,22 @@ gulp.task('styles', () => {
 });
 
 gulp.task('scripts', () => {
-  const b = browserify({
-    entries: 'app/scripts/main.js',
-    transform: babelify,
-    debug: true
-  });
+  // const b = browserify({
+  //   entries: 'app/scripts/main.js',
+  //   transform: babelify,
+  //   presets: ['es2015'],
+  //   debug: true
+  // });
+
+  const b = browserify("app/scripts/main.js", { debug: true })
+    .transform('babelify', { presets: ["es2015"]});
 
   return b.bundle()
     .pipe(source('bundle.js'))
     .pipe($.plumber())
     .pipe(buffer())
-    .pipe($.sourcemaps.init({loadMaps: true}))
-    .pipe($.sourcemaps.write('.'))
+    // .pipe($.sourcemaps.init({loadMaps: true}))
+    // .pipe($.sourcemaps.write('.'))
     .pipe(gulp.dest('.tmp/scripts'))
     .pipe(reload({stream: true}));
 });

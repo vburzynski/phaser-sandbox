@@ -1,4 +1,5 @@
-module.exports = {
+
+export default {
   preload: function () {
     // TODO load preload image / bar
   },
@@ -10,4 +11,4 @@ module.exports = {
     // start loading state
     this.game.state.start('load');
   }
-}
+};

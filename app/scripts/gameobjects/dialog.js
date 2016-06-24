@@ -8,7 +8,7 @@ function onUp() {
   console.log('up');
 }
 
-var Dialog = function (x, y, dialogMachine, cursors, gamepad, game) {
+export default function Dialog(x, y, dialogMachine, cursors, gamepad, game) {
   this.dialogMachine = dialogMachine;
   this.cursors = cursors;
   this.textIndex = -1;
@@ -66,7 +66,6 @@ Dialog.prototype = {
     var choiceIndex = this.textIndex - this.optionStart;
     var edgeId = this.dialog.options[choiceIndex].edge;
     this.dialogMachine.activateEdge(edgeId);
-    debugger;
     this.reset();
   },
 
@@ -128,6 +127,8 @@ Dialog.prototype = {
    * Resets the Dialog instance
    */
   reset: function () {
+    console.log('dialog reset');
+
     var index = 0,
       text,
       len,
@@ -229,5 +230,3 @@ Dialog.prototype = {
     this.resest();
   }
 };
-
-module.exports = Dialog;

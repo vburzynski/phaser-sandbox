@@ -1,10 +1,8 @@
-var _ = require('lodash'),
-  DialogMachine;
+import _ from 'lodash';
 
-
-DialogMachine = function (data) {
+export default function DialogMachine(data) {
   this.data = data;
-  this.initial = data.start;
+  this.initial = data.initial;
   this.nodeIndex = [];
   this.edgeIndex = [];
   this.currentNode = null;
@@ -23,6 +21,7 @@ DialogMachine = function (data) {
 
 DialogMachine.prototype = {
   start: function () {
+    console.log('starting dialog machine');
     var startId = this.initial;
     this.setNode(startId);
     return this;
@@ -61,4 +60,3 @@ DialogMachine.prototype = {
     return this;
   }
 };
-module.exports = DialogMachine;

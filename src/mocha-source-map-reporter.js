@@ -4,7 +4,7 @@ sourceMapper = require('../node_modules/source-map-support/source-map-support');
 
 Dot = require('../node_modules/grunt-mocha/node_modules/mocha/lib/reporters/dot.js');
 
-module.exports = Dot;
+export default Dot;
 
 parseLine = function(line) {
   var _, file, frame, ref, row;

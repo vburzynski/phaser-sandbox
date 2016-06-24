@@ -1,7 +1,7 @@
 /*jslint bitwise:true */
+import $ from 'jquery';
 
-var $ = require('jquery'),
-  bmpText,
+var bmpText,
   texts = [],
   stateName = '',
   cursors,
@@ -31,12 +31,12 @@ state event order:
 
 var isCursorDown = false;
 
-module.exports = {
+export default {
   /**
    * Preload all the assets for this state
    */
   preload: function () {
-    this.game.load.bitmapFont('arial', 'assets/fonts/arial_32.png', 'assets/fonts/arial_32.xml');
+    this.game.load.bitmapFont('arial', 'fonts/arial_32.png', 'fonts/arial_32.xml');
   },
 
   /**

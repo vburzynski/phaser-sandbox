@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import $ from 'jquery';
-import EventsMixin from './mixins/events';
+import EventsMixin from './mixins/events.js';
 
+console.log("EventsMixin", EventsMixin);
 /*
 data format:
 {
@@ -29,7 +30,7 @@ data format:
  * @param   {Object} data fsm data object
  * @returns {FSM}    new FSM object
  */
-function FSM(data) {
+export default function FSM(data) {
   return new FSM.prototype.init(data);
 }
 
@@ -255,5 +256,3 @@ _.extend(FSM.prototype, EventsMixin);
 FSM.prototype.init.prototype = FSM.prototype;
 
 window.FSM = FSM;
-
-exports = FSM;

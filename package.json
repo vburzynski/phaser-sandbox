@@ -9,11 +9,10 @@
     "node": ">=4"
   },
   "browser": {
-    "jquery": "./bower_components/jquery/dist/jquery.js",
     "lodash": "./bower_components/lodash/dist/lodash.js"
   },
   "browserify-shim": {
-    "jquery": "$",
+    "jquery": "global:$",
     "lodash": "_"
   },
   "browserify": {
