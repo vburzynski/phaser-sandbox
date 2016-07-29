@@ -1,17 +1,15 @@
 /*jslint bitwise:true */
-import $ from 'jquery';
 import Dialog from '../gameobjects/dialog';
 import DialogMachine from '../dialogMachine';
 import dialog_tree from './conversation.json';
 
-console.log("Dialog", Dialog);
-console.log("DialogMachine", DialogMachine);
-console.log("dialog_tree", dialog_tree);
+console.log('Dialog', Dialog);
+console.log('DialogMachine', DialogMachine);
+console.log('dialog_tree', dialog_tree);
 
 var bmpText,
-  stateName = '',
-  cursors,
-  dialog;
+    stateName = '',
+    cursors;
 
 // fsm.on('enter', function () {
 //   $("#current-state").html(fsm.current);
@@ -31,11 +29,11 @@ var bmpText,
  * @return {Number}  hex color
  */
 function generateHexColor() {
-  return ((0.5 + 0.5 * Math.random()) * 0xFFFFFF << 0);
+    return ((0.5 + 0.5 * Math.random()) * 0xFFFFFF << 0);
 }
 
 function updateText() {
-  bmpText.tint = generateHexColor();
+    bmpText.tint = generateHexColor();
 }
 
 /*
@@ -56,48 +54,47 @@ export default {
   /**
    * Preload all the assets for this state
    */
-  preload: function () {
-    this.game.load.bitmapFont('arial', 'fonts/arial_32.png', 'fonts/arial_32.xml');
-  },
+    preload: function () {
+        this.game.load.bitmapFont('arial', 'fonts/arial_32.png', 'fonts/arial_32.xml');
+    },
 
   /**
    * Create the initial state
    */
-  create: function () {
-    debugger;
-    var dialogMachine = new DialogMachine(dialog_tree);
-    dialogMachine.start();
+    create: function () {
+        var dialogMachine = new DialogMachine(dialog_tree);
+        dialogMachine.start();
 
-    bmpText = this.game.add.bitmapText(10, 10, 'arial', 'Phaser & Pixi \nrocking!', 32);
+        bmpText = this.game.add.bitmapText(10, 10, 'arial', 'Phaser & Pixi \nrocking!', 32);
 
-    cursors = this.game.input.keyboard.addKeys({
-      'up': Phaser.KeyCode.UP,
-      'down': Phaser.KeyCode.DOWN,
-      'left': Phaser.KeyCode.LEFT,
-      'right': Phaser.KeyCode.RIGHT,
-      'enter': Phaser.KeyCode.ENTER
-    });
+        cursors = this.game.input.keyboard.addKeys({
+            'up': Phaser.KeyCode.UP,
+            'down': Phaser.KeyCode.DOWN,
+            'left': Phaser.KeyCode.LEFT,
+            'right': Phaser.KeyCode.RIGHT,
+            'enter': Phaser.KeyCode.ENTER
+        });
 
-    var gamepad = this.game.input.gamepad;
+        var gamepad = this.game.input.gamepad;
 
 
-    console.log("Number of Gamepads connected: " + gamepad.padsConnected);
+        console.log('Number of Gamepads connected: ' + gamepad.padsConnected);
 
     // create dialog
-    dialog = new Dialog(10, 200, dialogMachine, cursors, gamepad, this.game);
+        new Dialog(10, 200, dialogMachine, cursors, gamepad, this.game);
 
-    gamepad.start();
+        gamepad.start();
 
     // update text color if down key pressed
-    this.game.input.onDown.add(updateText, this);
+        this.game.input.onDown.add(updateText, this);
 
-  },
+    },
 
   /**
    * Update the state
    */
-  update: function () {
+    update: function () {
     // generate some text that updates constantly
-    bmpText.setText('Phaser & Pixi rocking!\n' + Math.round(this.game.time.now) + "\n" + stateName);
-  }
+        bmpText.setText('Phaser & Pixi rocking!\n' + Math.round(this.game.time.now) + '\n' + stateName);
+    }
 };
