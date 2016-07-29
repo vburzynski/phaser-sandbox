@@ -1,6 +1,3 @@
-import FSM from './fsm';
-import $ from 'jquery';
-import _ from 'lodash';
 import boot from './states/boot';
 import load from './states/load';
 import main from './states/main';

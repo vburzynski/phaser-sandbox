@@ -1,19 +1,4 @@
 /*jslint bitwise:true */
-import $ from 'jquery';
-
-var bmpText,
-  texts = [],
-  stateName = '',
-  cursors,
-  textIndex = -1;
-
-function generateHexColor() {
-  return ((0.5 + 0.5 * Math.random()) * 0xFFFFFF << 0);
-}
-
-function updateText() {
-  bmpText.tint = generateHexColor();
-}
 
 /*
 state event order:
@@ -29,24 +14,22 @@ state event order:
   shutdown    - state is shutdown
 */
 
-var isCursorDown = false;
-
 export default {
   /**
    * Preload all the assets for this state
    */
-  preload: function () {
-    this.game.load.bitmapFont('arial', 'fonts/arial_32.png', 'fonts/arial_32.xml');
-  },
+    preload: function () {
+        this.game.load.bitmapFont('arial', 'fonts/arial_32.png', 'fonts/arial_32.xml');
+    },
 
   /**
    * Create the initial state
    */
-  create: function () {
-    bmpText = this.game.add.bitmapText(10, 10, 'arial', 'Click to continue', 32);
+    create: function () {
+        this.game.add.bitmapText(10, 10, 'arial', 'Click to continue', 32);
 
-    this.game.input.onDown.addOnce(function () {
-      this.game.state.start('main', true, false);
-    }, this);
-  }
+        this.game.input.onDown.addOnce(function () {
+            this.game.state.start('main', true, false);
+        }, this);
+    }
 };
