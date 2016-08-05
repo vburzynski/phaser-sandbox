@@ -1,3 +1,4 @@
+import FSM from './fsm';
 import boot from './states/boot';
 import load from './states/load';
 import main from './states/main';

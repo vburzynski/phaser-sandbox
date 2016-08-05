@@ -1,20 +1,21 @@
-// generated on 2016-06-15 using generator-webapp 2.1.0
 const gulp = require('gulp');
-const babel = require('gulp-babel');
-const gulpLoadPlugins = require('gulp-load-plugins');
 const browserSync = require('browser-sync');
 const del = require('del');
 const wiredep = require('wiredep').stream;
+const buffer = require('vinyl-buffer'); // TODO: needed???
+const source = require('vinyl-source-stream'); // TODO: needed???
+const webpack = require('webpack');
+const webpackStream = require('webpack-stream');
+const WebpackDevServer = require('webpack-dev-server');
+const webpackDevMiddleware = require('webpack-dev-middleware');
+const stripAnsi = require('strip-ansi');
 
-const browserify = require('browserify');
-const babelify = require('babelify');
-const buffer = require('vinyl-buffer');
-const source = require('vinyl-source-stream');
-
+const gulpLoadPlugins = require('gulp-load-plugins');
 const $ = gulpLoadPlugins();
-const reload = browserSync.reload;
 
+// process stylesheets
 gulp.task('styles', () => {
+  // grab all sass files
   return gulp.src('app/styles/*.scss')
     .pipe($.plumber())
     .pipe($.sourcemaps.init())
@@ -26,38 +27,39 @@ gulp.task('styles', () => {
     .pipe($.autoprefixer({browsers: ['> 1%', 'last 2 versions', 'Firefox ESR']}))
     .pipe($.sourcemaps.write())
     .pipe(gulp.dest('.tmp/styles'))
-    .pipe(reload({stream: true}));
+    .pipe(browserSync.reload({stream: true}));
 });
 
+// process javascript source files
 gulp.task('scripts', () => {
-  // const b = browserify({
-  //   entries: 'app/scripts/main.js',
-  //   transform: babelify,
-  //   presets: ['es2015'],
-  //   debug: true
-  // });
+  // provide webpack config file.
+  return gulp.src('app/scripts/main.js')
+    .pipe(webpackStream(require('./webpack.config.js')))
+    .pipe(gulp.dest('.tmp/scripts'));
 
-  const b = browserify("app/scripts/main.js", { debug: true })
-    .transform('babelify', { presets: ["es2015"]});
-
-  return b.bundle()
-    .pipe(source('bundle.js'))
-    .pipe($.plumber())
-    .pipe(buffer())
-    // .pipe($.sourcemaps.init({loadMaps: true}))
-    // .pipe($.sourcemaps.write('.'))
-    .pipe(gulp.dest('.tmp/scripts'))
-    .pipe(reload({stream: true}));
+  // const b = browserify("app/scripts/main.js", { debug: true })
+  //   .transform('babelify', { presets: ["es2015"]});
+  //
+  // return b.bundle()
+  //   .pipe(source('bundle.js'))
+  //   .pipe($.plumber())
+  //   .pipe(buffer())
+  //   .pipe(gulp.dest('.tmp/scripts'))
+  //   .pipe(browserSync.reload({stream: true}));
 });
 
 function lint(files, options) {
   return gulp.src(files)
-    .pipe(reload({stream: true, once: true}))
+    .pipe(browserSync.reload({
+      stream: true,
+      once: true
+    }))
     .pipe($.eslint(options))
     .pipe($.eslint.format())
     .pipe($.if(!browserSync.active, $.eslint.failAfterError()));
 }
 
+// run eslint on source files
 gulp.task('lint', () => {
   return lint('app/scripts/**/*.js', {
     fix: true
@@ -65,6 +67,7 @@ gulp.task('lint', () => {
     .pipe(gulp.dest('app/scripts'));
 });
 
+// run eslint on test files
 gulp.task('lint:test', () => {
   return lint('test/spec/**/*.js', {
     fix: true,
@@ -75,6 +78,7 @@ gulp.task('lint:test', () => {
     .pipe(gulp.dest('test/spec/**/*.js'));
 });
 
+// process html files
 gulp.task('html', ['styles', 'scripts'], () => {
   return gulp.src('app/*.html')
     .pipe($.useref({searchPath: ['.tmp', 'app', '.']}))
@@ -84,6 +88,7 @@ gulp.task('html', ['styles', 'scripts'], () => {
     .pipe(gulp.dest('dist'));
 });
 
+// process image files, running imagemin on them
 gulp.task('images', () => {
   return gulp.src('app/images/**/*')
     .pipe($.cache($.imagemin({
@@ -96,6 +101,7 @@ gulp.task('images', () => {
     .pipe(gulp.dest('dist/images'));
 });
 
+// process fonts
 gulp.task('fonts', () => {
   return gulp.src(require('main-bower-files')('**/*.{eot,svg,ttf,woff,woff2}', function (err) {})
     .concat('app/fonts/**/*'))
@@ -103,6 +109,7 @@ gulp.task('fonts', () => {
     .pipe(gulp.dest('dist/fonts'));
 });
 
+// copy any extras into the dist folder
 gulp.task('extras', () => {
   return gulp.src([
     'app/*.*',
@@ -112,32 +119,65 @@ gulp.task('extras', () => {
   }).pipe(gulp.dest('dist'));
 });
 
+// clean up stuff
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('serve', ['styles', 'scripts', 'fonts'], () => {
-  browserSync({
+// start a development server and watch for file changes
+gulp.task("serve", function(callback) {
+  // create webpack bundler
+  var webpackConfig = require('./webpack.config');
+  var bundler = webpack(webpackConfig);
+  var server = browserSync.create();
+
+  // reload all devices when bundle is complete
+  // or send a fullscreen error message
+  bundler.plugin('done', function (stats) {
+    if (stats.hasErrors() || stats.hasWarnings()) {
+      return server.sockets.emit('fullscreen:message', {
+        title: "Webpack Error:",
+        body:  stripAnsi(stats.toString()),
+        timeout: 100000
+      });
+    }
+    server.reload();
+  });
+
+  // Run server and use middleware for Hot Module Replacement
+  server.init({
+    open: 'local',
     notify: false,
     port: 9000,
+
+    // file server setup
     server: {
       baseDir: ['.tmp', 'app'],
       routes: {
         '/bower_components': 'bower_components'
       }
-    }
+    },
+
+    // don't log file changes
+    logFileChanges: false,
+
+    // webpack middleware configuration
+    middleware: [
+      webpackDevMiddleware(bundler, {
+        publicPath: webpackConfig.output.publicPath,
+        stats: { colors: true }
+      })
+    ],
+
+    plugins: ['bs-fullscreen-message'],
+
+    // files to watch
+    files: [
+      'app/css/*.css',
+      'app/*.html'
+    ]
   });
-
-  gulp.watch([
-    'app/*.html',
-    'app/images/**/*',
-    '.tmp/fonts/**/*'
-  ]).on('change', reload);
-
-  gulp.watch('app/styles/**/*.scss', ['styles']);
-  gulp.watch('app/scripts/**/*.js', ['scripts']);
-  gulp.watch('app/fonts/**/*', ['fonts']);
-  gulp.watch('bower.json', ['wiredep', 'fonts']);
 });
 
+// start a server using the distribution files
 gulp.task('serve:dist', () => {
   browserSync({
     notify: false,
@@ -148,8 +188,25 @@ gulp.task('serve:dist', () => {
   });
 });
 
-gulp.task('serve:test', ['scripts'], () => {
-  browserSync({
+// start a server and run the test suite
+gulp.task("serve:test", () => {
+  var webpackConfig = require('./webpack.config');
+  var bundler = webpack(webpackConfig);
+  var server = browserSync.create();
+
+  bundler.plugin('done', function (stats) {
+    if (stats.hasErrors() || stats.hasWarnings()) {
+      return server.sockets.emit('fullscreen:message', {
+        title: "Webpack Error:",
+        body:  stripAnsi(stats.toString()),
+        timeout: 100000
+      });
+    }
+    server.reload();
+  });
+
+  server.init({
+    open: 'local',
     notify: false,
     port: 9000,
     ui: false,
@@ -160,12 +217,20 @@ gulp.task('serve:test', ['scripts'], () => {
         '/bower_components': 'bower_components',
         '/sinon': 'node_modules/sinon/pkg'
       }
-    }
+    },
+    logFileChanges: false,
+    middleware: [
+      webpackDevMiddleware(bundler, {
+        publicPath: webpackConfig.output.publicPath,
+        stats: { colors: true }
+      })
+    ],
+    plugins: ['bs-fullscreen-message'],
+    files: [
+      'app/css/*.css',
+      'app/*.html'
+    ]
   });
-
-  gulp.watch('app/scripts/**/*.js', ['scripts']);
-  gulp.watch('test/spec/**/*.js').on('change', reload);
-  gulp.watch('test/spec/**/*.js', ['lint:test']);
 });
 
 // inject bower components
@@ -184,11 +249,8 @@ gulp.task('wiredep', () => {
     .pipe(gulp.dest('app'));
 });
 
-// gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {
-//   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
-// });
-
-gulp.task('build', ['html', 'images', 'fonts', 'extras'], () => {
+// build the distribution files
+gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 
