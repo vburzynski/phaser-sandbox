@@ -8,18 +8,6 @@
   "engines": {
     "node": ">=4"
   },
-  "browser": {
-    "lodash": "./bower_components/lodash/dist/lodash.js"
-  },
-  "browserify-shim": {
-    "jquery": "global:$",
-    "lodash": "_"
-  },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
-  },
   "devDependencies": {
     "babel-core": "^6.4.0",
     "babel-loader": "^6.2.4",

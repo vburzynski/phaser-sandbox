@@ -32,20 +32,9 @@ gulp.task('styles', () => {
 
 // process javascript source files
 gulp.task('scripts', () => {
-  // provide webpack config file.
   return gulp.src('app/scripts/main.js')
     .pipe(webpackStream(require('./webpack.config.js')))
     .pipe(gulp.dest('.tmp/scripts'));
-
-  // const b = browserify("app/scripts/main.js", { debug: true })
-  //   .transform('babelify', { presets: ["es2015"]});
-  //
-  // return b.bundle()
-  //   .pipe(source('bundle.js'))
-  //   .pipe($.plumber())
-  //   .pipe(buffer())
-  //   .pipe(gulp.dest('.tmp/scripts'))
-  //   .pipe(browserSync.reload({stream: true}));
 });
 
 function lint(files, options) {
@@ -123,7 +112,7 @@ gulp.task('extras', () => {
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
 // start a development server and watch for file changes
-gulp.task("serve", function(callback) {
+gulp.task("serve", ['styles'], function(callback) {
   // create webpack bundler
   var webpackConfig = require('./webpack.config');
   var bundler = webpack(webpackConfig);
@@ -251,6 +240,10 @@ gulp.task('wiredep', () => {
 
 // build the distribution files
 gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {
+  return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
+});
+
+gulp.task('build:nolint', ['html', 'images', 'fonts', 'extras'], () => {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 

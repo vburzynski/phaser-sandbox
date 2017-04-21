@@ -26,50 +26,45 @@ future data format:
 */
 
 // var format = {
-//     initial: '',
-//     states: {
-//         start: {
+//   initial: 'start',
+//   states: {
+//     start: {
 //       // position of node in UI
-//             position: [],
+//       position: [],
 //       // event list, name appears in node component ui
 //       // to specifies where the connection goes
-//             events: [
-//                 {
-//                     name: 'event-name',
-//                     to: 'node-name',
-//                     style: '',
-//                     direction: ''
-//                 }
-//             ],
+//       events: [{
+//         name: 'event-name',
+//         to: 'node-name',
+//         style: '',
+//         direction: ''
+//       }],
 //       // event handlers for this node
-//             handlers: {
-//                 onEnter: [
+//       handlers: {
+//         onEnter: [
 //           // custom function handler
-//                     function (event, from, to) {},
+//           function (event, from, to) {},
 //           // command with properties to send
-//                     {
-//                         command: 'command-name',
-//                         str: '',
-//                         arr: [],
-//                         num: 0,
-//                         bool: true
-//                     },
+//           {
+//             command: 'command-name',
+//             params: {}
+//           },
 //           // command without properties to send???
-//                     'command-name'
-//                 ],
-//                 onLeave: [
-//                     function (event, from, to) {}
-//                 ]
-//             }
-//         }
-//     },
-//     events: [{
-//         name: 'start',
-//         from: '*',
-//         to: 'name',
-//         onBefore: function (from, to) {},
-//         onAfter: function (from, to) {}
-//     }]
+//           'command-name'
+//         ],
+//         onLeave: [
+//           function (event, from, to) {}
+//         ]
+//       }
+//     }
+//   },
+//   events: [{
+//     name: 'start',
+//     from: '*',
+//     to: 'name',
+//     onBefore: function (from, to) {},
+//     onAfter: function (from, to) {}
+//   }]
 // };
 
 /**

@@ -6,7 +6,8 @@ var config = {
   devtool: '#eval-source-map',
 
   entry: {
-    main: './app/scripts/main'
+    main: './app/scripts/main',
+    graph: './app/scripts/graph'
   },
 
   output: {
@@ -28,6 +29,11 @@ var config = {
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.NoErrorsPlugin()
   ],
+
+  externals: {
+    "_": "lodash",
+    "d3": "d3"
+  },
 
   module: {
     loaders: [
